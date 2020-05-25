@@ -29,5 +29,6 @@ auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
 
 api = tweepy.API(auth)
 # print(api.search(q="trump",count=1)[0]._json['text'])
+# Another way to search for only the messages
 for tweet in tweepy.Cursor(api.search, q='trump').items(10):
     print(tweet.text)
