@@ -16,7 +16,7 @@ access_token_secret = creds['access_token_secret']
 # auth = OAuthHandler(consumer_key, consumer_secret)
 # auth.set_access_token(access_token, access_token_secret)
 # api = tweepy.API(auth)
-# This will display all the public posts done on the respective cres
+# This will display all the public posts done on the respective creds
 # public_tweets = api.home_timeline()
 # for tweet in public_tweets:
 #     print(tweet.text)
