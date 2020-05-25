@@ -14,17 +14,20 @@ access_token_secret = creds['access_token_secret']
 # AppAuthHandler is used for public data
 
 # auth = OAuthHandler(consumer_key, consumer_secret)
-auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
 # auth.set_access_token(access_token, access_token_secret)
-
-# Creating an object with the authentication
-api = tweepy.API(auth)
-
+# api = tweepy.API(auth)
+# This will display all the public posts done on the respective cres
 # public_tweets = api.home_timeline()
 # for tweet in public_tweets:
 #     print(tweet.text)
 
-api = tweepy.API(auth)
-print(api.search(q="trump",count=1)[0]._json['text'])
+# auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
+
+
+# Creating an object with the authentication
+
+
+# api = tweepy.API(auth)
+# print(api.search(q="trump",count=1)[0]._json['text'])
 # for tweet in tweepy.Cursor(api.search, q='tweepy').items(10):
     # print(tweet.text)
