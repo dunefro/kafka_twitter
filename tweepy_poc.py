@@ -13,6 +13,8 @@ access_token_secret = creds['access_token_secret']
 # OAuthHandler is used for user purpose that is why we need to also pass the access keys and tokens.
 # AppAuthHandler is used for public data
 
+# We require only public information so Oauth 2 authentication is used.
+
 # auth = OAuthHandler(consumer_key, consumer_secret)
 # auth.set_access_token(access_token, access_token_secret)
 # api = tweepy.API(auth)
