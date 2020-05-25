@@ -25,6 +25,6 @@ api = tweepy.API(auth)
 #     print(tweet.text)
 
 api = tweepy.API(auth)
-print(api.search(q="trump",count=1))
+print(api.search(q="trump",count=1)[0]._json['text'])
 # for tweet in tweepy.Cursor(api.search, q='tweepy').items(10):
     # print(tweet.text)
