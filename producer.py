@@ -44,21 +44,15 @@ def _check_previous_msg(text):
 # A topic will be having two partitions, one for normal tweets another for retweets
 def _produce_tweet_to_kafka(tweet,topic):
 
-    retweet_status , text = _check_retweet_status(tweet)
-    previous_msg_status = _check_previous_msg(text)
-    print('{} {}'.format(retweet_status,previous_msg_status))
-    producer_key = ''
-    if retweet_status and previous_msg_status:
-        producer_key = 'retweet'
-    elif previous_msg_status:
-        producer_key = 'tweet'
-    else: 
-        return False
-    producer.send(topic,key=producer_key,value=text)
+    producer_key , text = _check_retweet_status(tweet)
+    if _check_previous_msg(text):
+        producer.send(topic,key=producer_key,value=text)
+        return True
+    return False
+
     # Uncomment this if you dont wan't to use key_serializer and value_serializer
     # producer.send(topic,key=producer_key.encode(),value=text.encode())
-    producer.flush()
-    return True
+    # producer.flush()
 
 query = 'trump'
 count = 0
