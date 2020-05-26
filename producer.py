@@ -22,11 +22,11 @@ prev_msg = ''
 # checks whether the tweet is a retweet and sends the appropriate response back
 def _check_retweet_status(tweet):
 
-    flag = False
+    flag = 'tweet'
     full_text = tweet._json['full_text']
     if 'RT' in full_text:
         full_text = tweet._json['retweeted_status']['full_text']
-        flag = True
+        flag = 'retweet'
     
     return flag , full_text
 
@@ -43,6 +43,7 @@ def _check_previous_msg(text):
 # tweet will be produced to kafka topic here.
 # A topic will be having two partitions, one for normal tweets another for retweets
 def _produce_tweet_to_kafka(tweet,topic):
+
     retweet_status , text = _check_retweet_status(tweet)
     previous_msg_status = _check_previous_msg(text)
     print('{} {}'.format(retweet_status,previous_msg_status))
@@ -54,7 +55,6 @@ def _produce_tweet_to_kafka(tweet,topic):
     else: 
         return False
     producer.send(topic,key=producer_key,value=text)
-    print(text)
     # Uncomment this if you dont wan't to use key_serializer and value_serializer
     # producer.send(topic,key=producer_key.encode(),value=text.encode())
     producer.flush()
