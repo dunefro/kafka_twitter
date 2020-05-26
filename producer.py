@@ -64,7 +64,7 @@ while True:
         if _produce_tweet_to_kafka(tweet,query):
             print('Push Successful')
         else:
-            print('Push Fail')
+            print('Push Ignored')
     time.sleep(5)
     if count > 20:
         break
