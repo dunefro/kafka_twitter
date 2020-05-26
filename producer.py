@@ -19,7 +19,8 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092',key_serializer= lamb
 # Step to initialize the message so that duplicate msgs are not sent to the topic
 prev_msg = ''
 
-# checks whether the tweet is a retweet and sends the appropriate response back
+# checks whether the tweet is a retweet and sends the appropriate response back.
+# 'RT' string in a tweet declares that it is a retweet
 def _check_retweet_status(tweet):
 
     flag = 'tweet'
