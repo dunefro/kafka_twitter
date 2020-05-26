@@ -4,6 +4,7 @@ import yaml
 import time
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
+import random
 
 # Setting up Twitter developer client
 with open('creds.yaml') as f:
@@ -13,8 +14,20 @@ consumer_secret = creds['consumer_secret']
 auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
 api = tweepy.API(auth)
 
+
+# custom_partitioner to send data to a particular partition
+def _custom_partitioner(key_bytes, all_partitions, available_partitions):
+    key_string = key_bytes.decode()
+    if key_string == 'tweet':
+        return all_partitions[0]
+    elif key_string == 'retweet':
+        return all_partitions[1]
+    else:
+        return  random.choice(available_partitions)
+
+
 # Setting up Kafka
-producer = KafkaProducer(bootstrap_servers='localhost:9092',key_serializer= lambda a: a.encode(),value_serializer= lambda a: a.encode())
+producer = KafkaProducer(bootstrap_servers='localhost:9092',key_serializer= lambda a: a.encode(),value_serializer= lambda a: a.encode(),partitioner = _custom_partitioner)
 
 # Step to initialize the message so that duplicate msgs are not sent to the topic
 prev_msg = ''
@@ -46,6 +59,7 @@ def _check_previous_msg(text):
 def _produce_tweet_to_kafka(tweet,topic):
 
     producer_key , text = _check_retweet_status(tweet)
+    print('My key is ---------------------> {}'.format(producer_key))
     if _check_previous_msg(text):
         producer.send(topic,key=producer_key,value=text)
         return True

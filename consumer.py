@@ -5,4 +5,4 @@ def _consume_tweet(topic):
     for message in consumer:
         print ('%s:%d:%d: key=%s value=%s' % (message.topic, message.partition, message.offset, message.key, message.value))
     
-_consume_tweet('trump')
+_consume_tweet('modi')
