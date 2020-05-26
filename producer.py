@@ -14,7 +14,7 @@ auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
 api = tweepy.API(auth)
 
 # Setting up Kafka
-producer = KafkaProducer(bootstrap_servers='localhost:9092')
+producer = KafkaProducer(bootstrap_servers='localhost:9092',key_serializer= lambda a: a.encode(),value_serializer= lambda a: a.encode())
 
 # Step to initialize the message so that duplicate msgs are not sent to the topic
 prev_msg = ''
@@ -53,8 +53,9 @@ def _produce_tweet_to_kafka(tweet,topic):
         producer_key = 'tweet'
     else: 
         return False
+    producer.send(topic,key=producer_key,value=text)
     print(text)
-    producer.send(topic,key=producer_key.encode(),value=text.encode())
+    # producer.send(topic,key=producer_key.encode(),value=text.encode())
     producer.flush()
     return True
 
