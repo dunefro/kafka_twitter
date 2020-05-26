@@ -35,4 +35,4 @@ api = tweepy.API(auth)
 for tweet in tweepy.Cursor(api.search, q='trump',tweet_mode='extended').items(1):
     print(tweet._json['full_text'])
     print(tweet._json['retweeted_status']['full_text'])
-    # print(tweet._json['full_text'])
+    # print(tweet._json['full_text'])   
