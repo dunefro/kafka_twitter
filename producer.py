@@ -55,6 +55,7 @@ def _produce_tweet_to_kafka(tweet,topic):
         return False
     producer.send(topic,key=producer_key,value=text)
     print(text)
+    # Uncomment this if you dont wan't to use key_serializer and value_serializer
     # producer.send(topic,key=producer_key.encode(),value=text.encode())
     producer.flush()
     return True
