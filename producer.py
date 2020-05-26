@@ -25,7 +25,7 @@ def _check_retweet_status(tweet):
 
     flag = 'tweet'
     full_text = tweet._json['full_text']
-    if 'RT' in full_text:
+    if 'RT' in full_text[0:3]:
         full_text = tweet._json['retweeted_status']['full_text']
         flag = 'retweet'
     
@@ -55,7 +55,7 @@ def _produce_tweet_to_kafka(tweet,topic):
     # producer.send(topic,key=producer_key.encode(),value=text.encode())
     # producer.flush()
 
-query = 'trump'
+query = 'modi'
 count = 0
 while True:
     count +=1
