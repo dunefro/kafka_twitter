@@ -84,7 +84,6 @@ count = 0
 while True:
     count +=1
     for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
-        print(tweet._json['full_text'])
         if _produce_tweet_to_kafka(tweet,query):
             logging.info('New tweet has been pushed')
         else:
