@@ -28,6 +28,7 @@ def _custom_partitioner(key_bytes, all_partitions, available_partitions):
 
 # Setting up Kafka
 producer = KafkaProducer(bootstrap_servers='localhost:9092',key_serializer= lambda key: key.encode(),value_serializer= lambda value: value.encode(),partitioner = _custom_partitioner)
+producer.retries(5)
 
 # Step to initialize the message so that duplicate msgs are not sent to the topic
 prev_msg = ''
