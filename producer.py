@@ -79,16 +79,25 @@ def _produce_tweet_to_kafka(tweet,topic):
     # producer.send(topic,key=producer_key.encode(),value=text.encode())
     # producer.flush()
 
+# flush function is called for flushing any remaining messages
+def _call_flush():
+    producer.flush()
+
 query = 'modi'
 count = 0
-while True:
-    count +=1
-    for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
-        if _produce_tweet_to_kafka(tweet,query):
-            logging.info('New tweet has been pushed')
-        else:
-            logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
-    time.sleep(5)
-    if count > 20:
-        break
+try:
+    while True:
+        count +=1
+        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
+            if _produce_tweet_to_kafka(tweet,query):
+                logging.info('New tweet has been pushed')
+            else:
+                logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
+        time.sleep(5)
+        if count > 20:
+            _call_flush()
+            break
+except KeyboardInterrupt:
+    logging.error('Forceful termiation has been called, Gracefullt terminating')
+    _call_flush()
 
