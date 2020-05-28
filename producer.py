@@ -26,7 +26,7 @@ def _custom_partitioner(key_bytes, all_partitions, available_partitions):
         return  random.choice(available_partitions)
 
 
-# Setting up Kafka
+# Setting up Kafka, acks is default set to 1.
 producer = KafkaProducer(bootstrap_servers='localhost:9092',key_serializer= lambda key: key.encode(),value_serializer= lambda value: value.encode(),partitioner = _custom_partitioner)
 producer.retries(5)
 
