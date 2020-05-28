@@ -97,6 +97,7 @@ try:
         if count > 20:
             _call_flush()
             break
+        
 except KeyboardInterrupt:
     logging.warn(' Forceful termiation has been called, Gracefully terminating')
     _call_flush()
