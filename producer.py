@@ -82,6 +82,7 @@ def _produce_tweet_to_kafka(tweet,topic):
 # flush function is called for flushing any remaining messages
 def _call_flush():
     producer.flush()
+    producer.close()
 
 query = 'modi'
 count = 0
@@ -97,7 +98,7 @@ try:
         if count > 20:
             _call_flush()
             break
-        
+
 except KeyboardInterrupt:
     logging.warn(' Forceful termiation has been called, Gracefully terminating')
     _call_flush()
