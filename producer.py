@@ -98,6 +98,6 @@ try:
             _call_flush()
             break
 except KeyboardInterrupt:
-    logging.error('Forceful termiation has been called, Gracefullt terminating')
+    logging.warn(' Forceful termiation has been called, Gracefully terminating')
     _call_flush()
 
