@@ -5,6 +5,9 @@ import time
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import random
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 # Setting up Twitter developer client
 with open('creds.yaml') as f:
@@ -24,6 +27,14 @@ def _custom_partitioner(key_bytes, all_partitions, available_partitions):
         return all_partitions[1]
     else:
         return  random.choice(available_partitions)
+    
+# Callback function when message is produced successfully
+def _msg_sucessfully_produced(msg):
+    logging.info('Message produced at topic: {} on partition: {} at the offset: {}'.format(msg.topic,msg.partition,msg.offset))
+
+# Callback function when message failed to get produced
+def _msg_failed_to_get_produced(msg):
+    logging.error('Message failed to produce, Kindly check')
 
 
 # Setting up Kafka, acks is default set to 1.
@@ -59,9 +70,8 @@ def _check_previous_msg(text):
 def _produce_tweet_to_kafka(tweet,topic):
 
     producer_key , text = _check_retweet_status(tweet)
-    print('My key is ---------------------> {}'.format(producer_key))
     if _check_previous_msg(text):
-        producer.send(topic,key=producer_key,value=text)
+        producer.send(topic,key=producer_key,value=text).add_callback(_msg_sucessfully_produced).add_errback(_msg_failed_to_get_produced)
         return True
     return False
 
@@ -76,9 +86,9 @@ while True:
     for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
         print(tweet._json['full_text'])
         if _produce_tweet_to_kafka(tweet,query):
-            print('Push Successful')
+            logging.info('New tweet has been pushed')
         else:
-            print('Push Ignored')
+            logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
     time.sleep(5)
     if count > 20:
         break
