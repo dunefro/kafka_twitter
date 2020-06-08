@@ -84,14 +84,14 @@ def _call_flush():
     producer.flush()
     producer.close()
 
-query = 'modi'
+query = 'trump'
 count = 0
 try:
     while True:
         count +=1
-        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
-            if not _produce_tweet_to_kafka(tweet,query):
-                logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
+        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(100):
+            _produce_tweet_to_kafka(tweet,query)
+            # logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
         time.sleep(5)
         if count > 20:
             _call_flush()
