@@ -2,3 +2,4 @@ python-twitter
 tweepy
 kafka-python
 PyYAML
+elasticsearch
