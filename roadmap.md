@@ -6,8 +6,10 @@ Phase Alpha 1 -> Collecting tweets and producing them to kafka based on some key
             1.0.2 -> Added logging and flush mechnaism on termination (Completed)
 Phase Alpha 2.0.0 -> Consuming the tweet details and putting them in elasticsearch.
                 A) Tweet or retweet
-                B) Query Keyword
-                C) Actual Tweet
+                B) Query Keyword as index name
+                C) Actual Tweet 
+                D) Tweet id as the id of data in elasticsearch
+                E) Offsets and Partitions value
             2.0.1 (Optional) -> Using Elasticsearch Sink connect
             2.0.2 -> Adding header list along with the tweets. Header list include
                 A) For tweets -> Hashtags, Mentions, URLs, timestamp
