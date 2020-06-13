@@ -49,11 +49,12 @@ def _check_retweet_status(tweet):
 
     flag = 'tweet'
     full_text = tweet._json['full_text']
+    tweet_id = tweet._json['id_str']
     if 'RT' in full_text[0:3]:
         full_text = tweet._json['retweeted_status']['full_text']
         flag = 'retweet'
     
-    return flag , full_text
+    return flag , full_text , tweet_id
 
 # checks for duplicate message
 def _check_previous_msg(text):
@@ -69,9 +70,9 @@ def _check_previous_msg(text):
 # A topic will be having two partitions, one for normal tweets another for retweets
 def _produce_tweet_to_kafka(tweet,topic):
 
-    producer_key , text = _check_retweet_status(tweet)
+    producer_key , text , tweet_id = _check_retweet_status(tweet)
     if _check_previous_msg(text):
-        producer.send(topic,key=producer_key,value=text).add_callback(_msg_sucessfully_produced).add_errback(_msg_failed_to_get_produced)
+        producer.send(topic,key=producer_key,value=text,headers=[('tweet_id',tweet_id.encode())]).add_callback(_msg_sucessfully_produced).add_errback(_msg_failed_to_get_produced)
         return True
     return False
 
@@ -89,7 +90,7 @@ count = 0
 try:
     while True:
         count +=1
-        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(100):
+        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
             _produce_tweet_to_kafka(tweet,query)
             # logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
         time.sleep(5)
