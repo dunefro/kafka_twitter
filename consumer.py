@@ -10,6 +10,6 @@ def _consume_tweet(topic):
     consumer.subscribe([topic])
     # consumer.seek_to_beginning()
     for message in consumer:
-        print ('%s:%d:%d: key=%s value=%s' % (message.topic, message.partition, message.offset, message.key, message.value))
+        print ('%s:%d:%d: key=%s value=%s headers=%s' % (message.topic, message.partition, message.offset, message.key, message.value,message.headers))
     
 _consume_tweet('trump')
