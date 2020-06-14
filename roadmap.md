@@ -16,8 +16,8 @@ Phase Alpha 2.0.0 -> Consuming the tweet details and putting them in elasticsear
                 B) For Retweets -> Hashtags, Mentions, URLs, Retweet of, timestamp
             2.0.3 -> Change Elastisearch data to be passed to header list
 Phase Beta 1 -> Creating Flask API 
-Phase Stable 1 -> Training some models based on twitter feed
-Phase Alpha 2 -> Using Twitter Stream API to stream the tweets continously http://docs.tweepy.org/en/latest/streaming_how_to.html
+Phase Alpha 2.1 -> Using Twitter Stream API to stream the tweets continously http://docs.tweepy.org/en/latest/streaming_how_to.html
             A) Using Apache Spark
+Phase Stable 1 -> Training some models based on twitter feed
 ```
 
