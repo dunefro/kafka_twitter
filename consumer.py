@@ -13,11 +13,18 @@ elasticsearch_client = Elasticsearch(hosts=elasticsearch_url)
 def _group_name(topic):
     return '_'.join([topic,'group'])
 
-def _get_message_id(headers):
-    return headers[0][1].decode() # to get the tweet id back in string
+def _get_message_headers(headers):
+    return [ (header[0],header[1].decode()) for header in headers]
+
+def _get_message_id(headers,key):
+    if key == 'retweet':
+        return headers[5][1].decode() # to get the tweet id back in string
+    return headers[1][1].decode()
+    # print(msg_id)
+    # return msg_id
 
 def _get_message_body(message):
-    return dict(key=message.key,value=message.value,partition=message.partition,offset=message.offset)
+    return dict(key=message.key,value=message.value,partition=message.partition,offset=message.offset,tweet_info=_get_message_headers(message.headers))
 
 def _consume_tweet(topic):
   try:
@@ -25,7 +32,7 @@ def _consume_tweet(topic):
                             key_deserializer = lambda a: a.decode(), value_deserializer = lambda a: a.decode())
     # consumer.seek_to_beginning()
     for message in consumer:
-        elasticsearch_client.index(index=message.topic,body=_get_message_body(message),id=_get_message_id(message.headers))
+        elasticsearch_client.index(index=message.topic,body=_get_message_body(message),id=_get_message_id(message.headers,message.key))
         print('Message is successfully put to {} index for partition {} and offset {}'.format(message.topic,message.partition,message.offset))
         # print ('%s:%d:%d: key=%s value=%s headers=%s' % (message.topic, message.partition, message.offset, message.key, message.value,message.headers))
   except KeyboardInterrupt:
