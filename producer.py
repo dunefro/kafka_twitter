@@ -108,7 +108,7 @@ count = 0
 try:
     while True:
         count +=1
-        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
+        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(100):
             _produce_tweet_to_kafka(tweet,query)
             # logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
         time.sleep(5)
