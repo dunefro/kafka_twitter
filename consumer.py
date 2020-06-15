@@ -36,9 +36,9 @@ def _consume_tweet(topic):
     # consumer.seek_to_beginning()
     for message in consumer:
         elasticsearch_client.index(index=message.topic,body=_get_message_body(message),id=_get_message_id(message.headers,message.key))
-        print('Message is successfully put to {} index for partition {} and offset {}'.format(message.topic,message.partition,message.offset))
+        logging.info('Message is successfully put to {} index for partition {} and offset {}'.format(message.topic,message.partition,message.offset))
         # print ('%s:%d:%d: key=%s value=%s headers=%s' % (message.topic, message.partition, message.offset, message.key, message.value,message.headers))
   except KeyboardInterrupt:
-      print('Gracefully terminating the consumer')
+      logging.warn('Gracefully terminating the consumer')
     
 _consume_tweet('trump')
