@@ -1,6 +1,9 @@
 import yaml
 from elasticsearch import Elasticsearch
 from kafka import KafkaConsumer
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 with open('creds.yaml') as f:
     creds = yaml.load(f,Loader=yaml.FullLoader)
