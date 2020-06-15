@@ -43,20 +43,36 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092',key_serializer= lamb
 # Step to initialize the message so that duplicate msgs are not sent to the topic
 prev_msg = ''
 
+def _get_hashtags_tuple(tweet,flag):
+    return ('{}_hashtags'.format(flag),' '.join([hashtags['text'] for hashtags in tweet['entities']['hashtags']]).encode())
+
 def _build_header_list(flag,tweet):
-    
+    header_list = []
+    if flag=='retweet':
+        # for retweets, data in tweet._json['retweeted_status] is the part of actual tweet and not a retweet so the nomelclature can be confusing.
+        header_list.append(('tweet_timestamp',tweet._json['retweeted_status']['created_at'].encode()))
+        header_list.append((('tweet_id',tweet._json['retweeted_status']['id_str'].encode())))
+        header_list.append(_get_hashtags_tuple(tweet._json['retweeted_status'],'tweet'))
+        header_list.append(('tweet_source',tweet._json['retweeted_status']['source'].encode()))
+    header_list.append(('{}_timestamp'.format(flag),tweet._json['created_at'].encode()))
+    header_list.append(('{}_id'.format(flag),tweet._json['id_str'].encode()))
+    header_list.append(_get_hashtags_tuple(tweet._json,flag))
+    header_list.append(('{}_source'.format(flag),tweet._json['source'].encode()))
+    # if it is a tweet then hashtags from tweet._json must be tweet_hashtags 
+    # but if it is a retweet then the hashtags from tweet._json will be retweet_hashtag
+    return header_list
 
 # checks whether the tweet is a retweet and sends the appropriate response back.
 # 'RT' string in a tweet declares that it is a retweet
-def _check_retweet_status(tweet):
-
+def _get_retweet_status(tweet):
+    
     flag = 'tweet'
     full_text = tweet._json['full_text']
     if 'RT' in full_text[0:3]:
         full_text = tweet._json['retweeted_status']['full_text']
         flag = 'retweet'
-    _build_header_list(flag,tweet)
-    return flag , full_text 
+    header_list = _build_header_list(flag,tweet)
+    return flag , full_text , header_list
 
 # checks for duplicate message
 def _check_previous_msg(text):
@@ -72,9 +88,9 @@ def _check_previous_msg(text):
 # A topic will be having two partitions, one for normal tweets another for retweets
 def _produce_tweet_to_kafka(tweet,topic):
 
-    producer_key , text , tweet_id = _check_retweet_status(tweet)
+    producer_key , text , header_list = _get_retweet_status(tweet)
     # if _check_previous_msg(text):
-    producer.send(topic,key=producer_key,value=text,headers=[('tweet_id',tweet_id.encode())]).add_callback(_msg_sucessfully_produced).add_errback(_msg_failed_to_get_produced)
+    producer.send(topic,key=producer_key,value=text,headers=header_list).add_callback(_msg_sucessfully_produced).add_errback(_msg_failed_to_get_produced)
     return True
     # return False
 
@@ -92,7 +108,7 @@ count = 0
 try:
     while True:
         count +=1
-        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(100):
+        for tweet in tweepy.Cursor(api.search, q=query,tweet_mode='extended').items(1):
             _produce_tweet_to_kafka(tweet,query)
             # logging.info('Tweet is found to be duplicate. Ignoring the produce to kafka ...')
         time.sleep(5)
