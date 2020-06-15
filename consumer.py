@@ -39,6 +39,6 @@ def _consume_tweet(topic):
         logging.info('Message is successfully put to {} index for partition {} and offset {}'.format(message.topic,message.partition,message.offset))
         # print ('%s:%d:%d: key=%s value=%s headers=%s' % (message.topic, message.partition, message.offset, message.key, message.value,message.headers))
   except KeyboardInterrupt:
-      logging.warn('Gracefully terminating the consumer')
+      logging.warn('Gracefully terminating the consumer, Stopping the elasticsearch push, Kindly restart the consumer for data enrichment')
     
 _consume_tweet('trump')
