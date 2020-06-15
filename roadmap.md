@@ -12,8 +12,8 @@ Phase Alpha 2.0.0 -> Consuming the tweet details and putting them in elasticsear
                 E) Offsets and Partitions value
             2.0.1 (Optional) -> Using Elasticsearch Sink connect
             2.0.2 -> Adding header list along with the tweets. Header list include
-                A) For tweets ->  User with Name and ID, Mentions with Name and ID, timestamp
-                B) For Retweets -> User with Name and ID, Mentions with Name and ID, Retweet profile with Name and ID, timestamp
+                A) For tweets ->  Hashtags, User with Name and ID, Mentions with Name and ID, timestamp
+                B) For Retweets -> Hashtags, User with Name and ID, Mentions with Name and ID, Retweet profile with Name and ID, timestamp
             2.0.3 -> Change Elastisearch data to be passed to header list
 Phase Beta 1 -> Creating Flask API 
 Phase Alpha 2.1 -> Using Twitter Stream API to stream the tweets continously http://docs.tweepy.org/en/latest/streaming_how_to.html
